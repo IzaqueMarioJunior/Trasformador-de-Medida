@@ -1,0 +1,78 @@
+import tkinter as tk
+from tkinter import ttk, messagebox
+
+
+unidades = [
+    'Milímetro',
+    'Litro',
+    'Mililitro',
+    'Centímetro',
+    'Metro',
+    'Quilômetro',
+    'Decâmetro',
+    'Polegada',
+    'Joule',
+    'Segundos',
+    'Minuto',
+    'Horas',
+]
+
+fatores_metro = {
+    'Milímetro': 0.001,
+    'Centímetro': 0.01,
+    'Metro': 1,
+    'Quilômetro': 1000,
+    'Decâmetro': 10,
+    'Polegada': 0.0254,
+}
+
+
+def converter():
+    try:
+        valor = float(entrada_valor.get())
+        de = combo_de.get()
+        para = combo_para.get()
+
+        if de in fatores_metro and para in fatores_metro:
+            em_metros = valor * fatores_metro[de]
+            convertido = em_metros / fatores_metro[para]
+            label_resultado.config(text=f"Resultado: {convertido:.2f} {para.upper()}")
+        else:
+            label_resultado.config(text="Conversão não suportada.")
+    except ValueError:
+        messagebox.showerror("Erro", "Por favor, insira um número válido.")
+
+
+janela = tk.Tk()
+janela.title("Conversão de Medidas")
+janela.geometry("400x300")
+janela.configure(bg="#222")
+
+
+titulo = tk.Label(janela, text="Conversão de Medidas", font=("Arial", 16, "bold"), fg="white", bg="#222")
+titulo.pack(pady=10)
+
+
+entrada_valor = tk.Entry(janela, justify="center", font=("Arial", 14))
+entrada_valor.pack(pady=10)
+
+frame_selectores = tk.Frame(janela, bg="#222")
+frame_selectores.pack(pady=10)
+
+combo_de = ttk.Combobox(frame_selectores, values=unidades, state="readonly", width=15)
+combo_de.set("Milímetro")
+combo_de.pack(side="left", padx=10)
+
+combo_para = ttk.Combobox(frame_selectores, values=unidades, state="readonly", width=15)
+combo_para.set("Metro")
+combo_para.pack(side="left", padx=10)
+
+
+botao_converter = tk.Button(janela, text="Converter", command=converter, font=("Arial", 12), bg="#0a84ff", fg="white")
+botao_converter.pack(pady=10)
+
+
+label_resultado = tk.Label(janela, text="", font=("Arial", 14), fg="white", bg="#222")
+label_resultado.pack(pady=10)
+
+janela.mainloop()
