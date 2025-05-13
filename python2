@@ -1,0 +1,46 @@
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+fatores_metro = {
+    'Milímetro': 0.001,
+    'Centímetro': 0.01,
+    'Metro': 1,
+    'Quilômetro': 1000,
+    'Decâmetro': 10,
+    'Polegada': 0.0254,
+}
+
+unidades = [
+    'Milímetro',
+    'Litro',
+    'Mililitro',
+    'Centímetro',
+    'Metro',
+    'Quilômetro',
+    'Decâmetro',
+    'Polegada',
+    'Joule',
+    'Segundos',
+    'Minuto',
+    'Horas',
+]
+
+@app.route('/converter', methods=['POST'])
+def converter():
+    data = request.json
+    try:
+        valor = float(data.get('valor', 0))
+        de = data.get('de')
+        para = data.get('para')
+        if de in fatores_metro and para in fatores_metro:
+            em_metros = valor * fatores_metro[de]
+            convertido = em_metros / fatores_metro[para]
+            return jsonify({'resultado': f'{convertido} {para.upper()}'})
+        else:
+            return jsonify({'erro': 'Conversão não suportada'}), 400
+    except (ValueError, TypeError):
+        return jsonify({'erro': 'Dados inválidos'}), 400
+
+if __name__ == '__main__':
+    app.run(debug=True)
